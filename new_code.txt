@@ -1,3 +1,7 @@
 class white {
 	color: white;
 }
+
+class brown{
+
+}
