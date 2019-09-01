@@ -1,12 +1,20 @@
 from math import factorial
-from functools import reduce
-import copy, pyautogui, time
-from random import randint
+import copy
 
 
 rangs = {'ElderCard': 147, 'Pair': 1200/(1/1.28), 'TwoPairs': 1200/(1/3.26), 'Set': 1200/(1/19.7),
          'Street': 1200/(1/20.6), 'Flash': 1200/(1/32.1), 'FullHouse': 1200/(1/37.5), 'Kare': 1200/(1/594),
          'StreetFlash': 1200/(1/3589.6)}
+
+suits = ['Черви_', 'Трефы_', 'Буби_', 'Пики_']
+row = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+
+ch = list((suits[0]+i for i in row))
+tr = list((suits[1]+i for i in row))
+bu = list((suits[2]+i for i in row))
+pi = list((suits[3]+i for i in row))
+
+pool = bu+tr+ch+pi
 
 
 def ch_cor(chance, times):
@@ -638,132 +646,6 @@ def turn_chance_point(cards_pool, map_of_values, map_of_suits, map_of_cards, wei
             round(street_chance * rangs['Street']), round(flash_chance * rangs['Flash']), round(fh_chance * rangs['FullHouse']),
             round(kare_chance * rangs['Kare']), round(flash_street_chance * rangs['StreetFlash']),
             ways_of_1card_street, ways_of_1card_flash_street]
-
-
-suits = ['Черви_', 'Трефы_', 'Буби_', 'Пики_']
-row = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-
-ch = list((suits[0]+i for i in row))
-tr = list((suits[1]+i for i in row))
-bu = list((suits[2]+i for i in row))
-pi = list((suits[3]+i for i in row))
-
-pool = bu+tr+ch+pi
-
-pool2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-test = pool
-
-flash_street = 4*chance_for_flush_street(5, 13, test, search_cards_needed_by=5)
-
-kare = 13*chance(5, 4, test, search_cards_needed_by=4)
-only_kare = kare
-
-street = 10*chance_for_street(5, 5, test, search_cards_needed_by=5)
-only_street = street - flash_street
-
-flush = 4*chance(5, 13, test, search_cards_needed_by=5)
-only_flush = flush - flash_street
-
-fh = c(13,2)*chance_for_fh(5, 8, test, search_cards_needed_by=5)
-only_fh = fh
-
-sat = 13*chance_for_set(5, 4, test, search_cards_needed_by=3)
-only_sat = sat
-
-two_pairs = c(13, 2)*chance_for_2_pairs(5, 8, test, search_cards_needed_by=4)
-only_two_pairs = two_pairs
-
-# шанс выпадения в течение игры пары для одного игрока
-one_pair = 13*chance_for_1_pair(5, 4, test, search_cards_needed_by=2)
-only_one_pair = one_pair
-
-
-# def count_ways_of_op_3card_street(model, ways_of_2cards_street, ways_of_3cards_street, i_1, i_2, i_3):
-#     if model[12] == 1:
-#         if model[0:4].count(1) == 1 or model[8:12].count(1) == 1:
-#             ways_of_3cards_street += 1
-#         elif model[0:4].count(1) == 2:
-#             ways_of_2cards_street += 1
-#             if i_1 == 2:
-#                 ways_of_3cards_street += 2
-#             elif i_1 == 1:
-#                 ways_of_3cards_street += 1
-#
-#     elif model[0:5].count(1) == 3:
-#         if model[i_1:i_3+1].count(0) == 0:
-#             ways_of_2cards_street += 3 - (1 - i_1)
-#         elif model[i_1:i_3+1].count(0) == 1:
-#             ways_of_2cards_street += 2
-#             ways_of_3cards_street += 1
-#         elif model[i_1:i_3+1].count(0) == 2:
-#             ways_of_2cards_street += 1
-#             if i_2 - i_1 == 3:
-#                 ways_of_3cards_street += 2
-#             elif i_2 - i_1 == 2:
-#                 ways_of_3cards_street += 1
-#
-#     elif model[0:5].count(1) == 2:
-#         if model[i_1:i_2+1].count(0) == 0:
-#             ways_of_3cards_street = 4 - (2 - i_1)
-#
-#             if ways_of_3cards_street > 4: ways_of_3cards_street = 4
-#
-#             if i_3 - i_2 == 3:
-#                 ways_of_3cards_street -= 2
-#                 ways_of_2cards_street += 1
-#             elif i_3-i_2 == 2:
-#                 ways_of_2cards_street += 2
-#                 ways_of_3cards_street -= 3
-#
-#         elif model[i_1:i_2+1].count(0) == 1:
-#             ways_of_3cards_street = 4 - (2 - i_1)
-#
-#             if ways_of_3cards_street > 3: ways_of_3cards_street = 3
-#
-#             if i_3 - i_2 == 2:
-#                 ways_of_3cards_street -= 2
-#                 ways_of_2cards_street += 1
-#             elif i_3-i_2 == 1:
-#                 ways_of_2cards_street += 2
-#                 ways_of_3cards_street = 1
-#
-#
-#
-#
-#
-#         if ways_of_3cards_street > 5 - (i_2 - i_1):
-#             ways_of_3cards_street = 5 - (i_2 - i_1)
-#
-#
-#     elif model[0:5].count(1) == 1:
-#         i_1 = model.index(1, 0, 5)
-#         if model[i_1:i_1 + 5].count(1) == 2:
-#             i_1 = model.index(1, 0, 5)
-#             i_2 = model.index(1, i_1 + 1, i_1 + 5)
-#             ways_of_3cards_street = 5 - (i_2 - i_1)
-#             if ways_of_3cards_street > i_1 + 2:
-#                 ways_of_3cards_street = i_1 + 2
-#     else:
-#         if model[5:10].count(1) == 2:
-#             i_1 = model.index(1, 5, 10)
-#             i_2 = model.index(1, i_1 + 1, i_1 + 5)
-#             ways_of_3cards_street = 5 - (i_2 - i_1)
-#             if i_2 == 9 and i_1 == 8:
-#                 ways_of_3cards_street -= 1
-#         elif model[5:10].count(1) == 0:
-#             ways_of_3cards_street = 2
-#         else:
-#             i_1 = model.index(1, 5, 10)
-#             i_2 = model.index(1, i_1 + 1, 13)
-#             if i_2 - i_1 > 4:
-#                 ways_of_3cards_street = 0
-#             else:
-#                 ways_of_3cards_street = 5 - (i_2 - i_1)
-#                 if ways_of_3cards_street > 13 - i_2:
-#                     ways_of_3cards_street = 13 - i_2
-#
-#     return ways_of_1card_street
 
 
 def count_ways_of_op_street(model, suit_flash, map_of_cards, player_model, remain_pool):
@@ -1549,139 +1431,3 @@ def op_river_chance(map_of_suits, map_of_cards, map_of_values, player_map_of_val
             round(ch_cor(street_chance, opc)*rangs['Street']), round(ch_cor(flash_chance, opc)*rangs['Flash']),
             round(ch_cor(fh_chance, opc)*rangs['FullHouse']), round(ch_cor(kare_chance, opc)*rangs['Kare']),
             round(ch_cor(flash_street_chance, opc)*rangs['StreetFlash'])]
-
-
-# print('Шанс одной пары {}%'.format(only_one_pair*100))
-# print('Шанс двух пар {}%'.format(only_two_pairs*100))
-# print('Шанс сета {}%'.format(only_sat*100))
-# print('Шанс стрита {}%'.format(only_street*100))
-# print('Шанс флэша {}%'.format(only_flush*100))
-# print('Шанс фул хаус {}%'.format(only_fh*100))
-# print('Шанс каре {}%'.format(only_kare*100))
-# print('Шанс флэш-стрит {}%'.format(flash_street*100))
-
-# x = [0,0,0,0,0,0,2,0,0,0,0,0,0]
-# x1 = [0,0,1,0,1,1,1,0,1,0,0,0,1]
-# map_of_cards = [('Трефы', '4'), ('Трефы', '6'), ('Трефы', '7'), ('Трефы', '8'), ('Буби', '10'), ('Трефы', 'A')]
-# map_of_suits = [('Черви_', 0), ('Трефы_', 5), ('Буби_', 1), ('Пики_', 0)]
-
-
-# poo_ = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-poo1 = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-
-# pre_chance_point(poo_, x, [('Черви_', 1), ('Трефы_', 1), ('Буби_', 0), ('Пики_', 0)], weight_of_hand = 1600)
-
-# floop_chance_point(poo1, x1, map_of_suits, map_of_cards, weight_of_hand=900)
-
-# turn_chance_point(poo1, x1, map_of_suits, map_of_cards, weight_of_hand=900)
-
-# [('Пики', '7'), ('Пики', '5'), ('Буби', '5'), ('Пики', 'K'), ('Черви', 'Q'), ('Пики', '4')] [0, 0, 1, 2, 0, 1, 0, 0, 0, 0, 1, 1, 0]
-
-# print(count_ways_of_op_street([0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0]))
-
-# print(count_ways_of_op_street([0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1]))
-
-
-# model = [0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0]
-# map_of_c = [('Пики', '9'), ('Пики', '10'), ('Трефы', '5'), ('Буби', 'Q'), ('Пики', '8')]
-# suit_f = 'Пики'
-
-# model2 = [0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1]
-# map_of_c2 = [('Пики', 'Q'), ('Трефы', 'A'), ('Пики', '3'), ('Пики', '5'), ('Черви', 'K'), ('Буби', '4')]
-# suit_f2 = 'Пики'
-
-# print(count_ways_of_op_street(model, suit_f, map_of_c))
-# print(count_ways_of_op_street(model2, suit_f2, map_of_c2))
-
-# map_of_floop_val = [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0]
-# map_of_c = [('Пики', '9'), ('Пики', '10'), ('Пики', '8')]
-# map_of_s = [('Черви_', 0), ('Трефы_', 0), ('Буби_', 0), ('Пики_', 3)]
-# suit_f = 'Пики'
-#
-# map_of_player_val = [0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0]
-# map_of_p_cards = [('Трефы', '5'), ('Пики', 'Q'), ('Пики', '9'), ('Пики', '10'), ('Пики', '8')]
-# map_of_ssss = [('Черви_', 0), ('Трефы_', 0), ('Буби_', 1), ('Пики_', 4)]
-#
-# map_of_pool_value = [4, 4, 4, 3, 4, 4, 3, 3, 3, 4, 3, 4, 4]
-# map_of_pool_s = [('Черви_', 13), ('Трефы_', 12), ('Буби_', 12), ('Пики_', 10)]
-#
-# res = op_floop_chance(map_of_s, map_of_c, map_of_floop_val, map_of_player_val, map_of_pool_s, map_of_pool_value, pool, 1, 1, 700, False)
-#
-# print(res)
-#
-# res_of_p = floop_chance_point(pool, map_of_player_val, map_of_ssss, map_of_p_cards, weight_of_hand=900)
-# print(res_of_p)
-# queue = list(i for i in range(5))
-# for i in range(2, 2):
-#     print(i)
-#
-# a = [20, 1]
-# b = [10, 5]
-# aa = [1, 80]
-# c = [a, b, aa]
-# c = sorted(c)
-# print(c)
-# try:
-#     while True:
-#         x, y = pyautogui.position()
-#         positionStr = 'X: ' + str(x).rjust(4) + ' Y: ' + str(y).rjust(4)
-#
-#         time.sleep(2)
-#
-#         x1, y1 = pyautogui.position()
-#
-#         if x != x1 or y != y1:
-#             print(positionStr, end='\n')
-#
-# except KeyboardInterrupt:
-#     print('\n')
-
-# a = [0, 0, 1, 0, 1, 0, 1]
-# b = [2, 2, 2, 2, 2, 2, 2]
-#
-# ccc = list(map(lambda x, y: x / y, a, b))
-# ccc = ccc[6:]
-# print(ccc)
-# ccc = reduce(lambda x, y: x + y, ccc)
-# print(ccc)
-
-# flash_street = (10*4)/c(52, 5)
-# kare = 13*c(48, 1)/c(52, 5)
-# fullh = 13*12*c(4, 3)*c(4, 2)/c(52, 5)
-# flash = 4*c(13, 5)/c(52, 5) - flash_street
-# street = 10*c(4, 1)*c(4, 1)*c(4, 1)*c(4, 1)*c(4, 1)/c(52, 5) - flash_street
-# sat = 13*c(4, 3)*c(49, 2)/c(52, 5) - kare - fullh
-# two_p = c(13, 2)*c(4, 2)*c(4, 2)*c(48, 1)/c(52, 5) - fullh
-# p = 13*c(4, 2)*c(50, 3)/c(52, 5) - kare - fullh - sat - two_p
-#
-# print([p, two_p, sat, street, flash, fullh, kare, flash_street])
-# a = [0, 1, 2, 1, 5]
-#
-# def make(num):
-#     if num == 1:
-#         pass
-#
-#         print('yes')
-#
-# make(1)
-# time.sleep(2)
-# print(pyautogui.locateOnScreen('turn_v2.png'))
-
-def func(val):
-    return val[1], val[0]
-
-
-a = [(1, 2), (4, 3), (3, 3), (2, 6), (3, 1), (4, 1)]
-
-a.sort(key=func)
-
-print(a)
-
-# def make(*args):
-#     a = []
-#     for i in args:
-#         a.append(i)
-#     return a
-#
-#
-# print(make(a, b))

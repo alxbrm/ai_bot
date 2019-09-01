@@ -1,7 +1,5 @@
 import random, copy
-from math import factorial
-from functools import reduce
-from chances import count_ways_of_1card_flash_street, count_ways_of_1card_street, c, chance
+
 
 rangs = {'ElderCard': 147, 'Pair': 1200/(1/1.28), 'TwoPairs': 1200/(1/3.26), 'Set': 1200/(1/19.7),
          'Street': 1200/(1/20.6), 'Flash': 1200/(1/32.1), 'FullHouse': 1200/(1/37.5), 'Kare': 1200/(1/594),
@@ -27,16 +25,6 @@ map_of_c = [('Пики', '10'), ('Пики', 'J'), ('Пики', 'Q'), ('Пики
 map_of_s = [('Черви_', 0), ('Трефы_', 0), ('Буби_', 0), ('Пики_', 5)]
 map_of_v = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
 map_of_v3 = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 2, 2]
-
-
-# def det_max_res():
-#     max_e, _, _, _, max_strt, max_f, _, _, max_fs = results_count(map_of_s, map_of_c, map_of_v, False)
-#     _, _, _, _, _, _, _, max_k, _ = results_count(map_of_s, map_of_c, map_of_v0, False)
-#     _, _, _, _, _, _, max_fh, _, _ = results_count(map_of_s, map_of_c, map_of_v1, False)
-#     _, _, _,max_set, _, _, _, _, _ = results_count(map_of_s, map_of_c, map_of_v2, False)
-#     _, max_p, max_tp, _, _, _, _, _, _ = results_count(map_of_s, map_of_c, map_of_v3, False)
-#
-#     return max_e, max_p, max_tp, max_set, max_strt, max_f, max_fh, max_k, max_fs
 
 
 def take_card_from_pool(pool, times=1, test_mode=False):
@@ -610,7 +598,7 @@ def separate_points(list):
 
 def results_count(map_of_suits, map_of_cards, values_amount, show_info=True):
 
-    points=[]
+    points = []
 
     weight_of_elder_card, _ = elder_card(values_amount)
     if weight_of_elder_card == 0:
@@ -660,17 +648,3 @@ def results_count(map_of_suits, map_of_cards, values_amount, show_info=True):
         print('Максимально очков за FLUSH-STREET:{}'.format(weight_of_strt_flash))
 
     return points
-
-
-# moc = [('Пики', 'A'), ('Черви', '9'), ('Трефы', '9'), ('Буби', 'A'), ('Трефы', '10'), ('Буби', '9')]
-# mov = [0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 2]
-# mas = [('Черви_', 0), ('Трефы_', 0), ('Буби_', 1), ('Пики_', 4)]
-#
-# print(results_count(mas, moc, mov))
-
-# add_weight = [12, 5, 4, 3, 2]
-# max_add_w = add_weight[0]*100 + add_weight[1]*10 + add_weight[2] + add_weight[3]*0.1 + add_weight[4]*0.01
-# print(max_add_w)
-# add_weight = [11, 10, 9, 8, 7]
-# max_add_w = add_weight[0]*100 + add_weight[1]*10 + add_weight[2] + add_weight[3]*0.1 + add_weight[4]*0.01
-# print(max_add_w)

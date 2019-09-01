@@ -491,22 +491,6 @@ def put_cursor_and_get_from_input(x_y, game_num=0):
     pyautogui.press('c')
     pyautogui.keyUp('ctrl')
 
-    # if game_num == 1:
-    #
-    #     win32clipboard.OpenClipboard()
-    #
-    #     rc = win32clipboard.EnumClipboardFormats(0)
-    #
-    #     while rc:
-    #         try:
-    #             format_name = win32clipboard.GetClipboardFormatName(rc)
-    #         except win32clipboard.error:
-    #             format_name = '?'
-    #         print('format', rc, format_name)
-    #         rc = win32clipboard.EnumClipboardFormats(rc)
-    #
-    #     win32clipboard.CloseClipboard()
-
     win32clipboard.OpenClipboard()
 
     value = win32clipboard.GetClipboardData(13)
@@ -702,10 +686,6 @@ def interface(game, participants, basic, small_blind, limit):
     control_base_point = pyautogui.locateOnScreen('basic_point.png')
 
     print('Начало interface')
-    print('Это в basic[absolute_call] {}, а это по факту обнаружено {}'.format(basic['absolut_call'], pyautogui.locateOnScreen('pics/f6.png')))
-
-    # pyautogui.screenshot('test.png', region=basic['absolut_river'])
-    # pyautogui.screenshot('test1.png', region=basic['absolut_r_suit'])
 
     if basic['base_point'][0] != control_base_point[0] or basic['base_point'][1] != control_base_point[1]:
         print('Обнаружено смещение окна!')
@@ -714,7 +694,6 @@ def interface(game, participants, basic, small_blind, limit):
     if pyautogui.locateOnScreen('pics/f6.png', region=basic['absolut_call']):
 
         print('Начало interface.locateOnScreen')
-        # print('Это в basic[absolute_call] {}, а это по факту обнаружено {}'.format(basic['absolut_call'], pyautogui.locateOnScreen('pics/f6.png')))
 
         p_pos = capture_player_pos(basic['base_point'], game_num=game.game_num)
 
@@ -734,16 +713,7 @@ def interface(game, participants, basic, small_blind, limit):
                                                     region=basic['absolut_bb_marker'], grayscale=True)
 
         p_cards = convert_player_c_into_cards(basic['absolut_p_c_suit'], basic['absolut_p_c'])
-        # pyautogui.screenshot('test_1.png', region=basic['absolut_p_c_suit'])
-        # pyautogui.screenshot('player_cards_value.png', region=basic['absolut_p_c'])
-        print(p_cards)
-
         pyautogui.screenshot('common_zone.png', region=basic['absolut_common'])
-
-        # pyautogui.screenshot('СALL смещение местоположения.png', region=basic['is_call'])
-        # pyautogui.screenshot('MAX смещение местоположения.png', region=basic['abs_m_b'])
-        # print('координаты кнопка max {},
-        # определенные позиции {}'.format(pyautogui.locateOnScreen('pics/max_button.png'), basic['abs_m_b']))
         game.handout(p_cards, p_pos)
 
         preflop_postflop = [[], [], [], []]
@@ -769,22 +739,9 @@ def interface(game, participants, basic, small_blind, limit):
                 make_screenshot(game.game_num, basic['base_point'])
 
                 rnd = capture_round(basic['absolut_common'], rnd)
-                # rnd = capture_round(basic['absolut_floop'], basic['absolut_turn'], basic['absolut_river'])
-
-                # if rnd == 1:
-                #     pyautogui.screenshot('turn_v2.png', region=basic['absolut_river'])
 
                 iters += 1
                 print('Раунд {}'.format(rnd))
-                # pyautogui.screenshot('prefloop_v2.png', region=basic['absolut_floop'])
-                # pyautogui.screenshot('floop_v2.png', region=basic['absolut_turn'])
-                # pyautogui.screenshot('turn_v2.png', region=basic['absolut_river'])
-                # print('установочные координаты префлопа{}, по факту {}'.format(basic['absolut_floop'], pyautogui.locateOnScreen('prefloop.png')))
-                # print('установочные координаты basic[is_call] {}, по факту {}'.format(basic['is_call'], pyautogui.locateOnScreen('pics/call.png')))
-                # print('установочные координаты basic[is_check] {}, по факту {}'.format(basic['is_check'], pyautogui.locateOnScreen('pics/check.png')))
-                # print('установочные координаты is_big_blind {}, по факту {}'.format(basic['absolut_bb_marker'],
-                #                                                                        pyautogui.locateOnScreen(
-                #                                                                            'pics/bb_marker_2c.png')))
 
                 if not preflop_postflop[rnd] and rnd != 0:
                     if rnd == 1:
@@ -799,24 +756,13 @@ def interface(game, participants, basic, small_blind, limit):
 
                 abs_banks, bets = convert_banks_im_to_ints(basic['absolut_banks_coords'])
                 print('Банки игроков {}'.format(abs_banks))
-                # print('In_game_mark координаты {}'.format(pyautogui.locateOnScreen('pics/in_game_marker.png')))
-                # print('1 из банка координаты {}'.format(pyautogui.locateOnScreen('pics/1b.png')))
-                # pyautogui.screenshot('test_in_game_mark.png', region=(
-                #     basic['absolut_banks_coords'][1][0],
-                #     basic['absolut_banks_coords'][1][1] - 2*basic['absolut_banks_coords'][1][3],
-                #     basic['absolut_banks_coords'][1][2], basic['absolut_banks_coords'][1][3]))
 
                 there_is_max_button = pyautogui.locateOnScreen('pics/max_button.png', region=basic['abs_m_b'])
-
-                # pyautogui.screenshot('test.png', region=basic['abs_m_b'])
 
                 if pyautogui.locateOnScreen('pics/check.png', region=basic['is_check']):
                     needed = 0
                     print('Никто не повысил ставки. Доступна кнопка Check')
                 elif pyautogui.locateOnScreen('pics/call.png', region=basic['is_call']):
-
-                    # pyautogui.screenshot('test_1.png', region=basic['is_call'])
-
                     needed_coords = list(pyautogui.locateOnScreen('pics/call.png'))
                     needed_coords[0] += needed_coords[2]
                     needed_coords[2] += 20
@@ -825,9 +771,7 @@ def interface(game, participants, basic, small_blind, limit):
                         p_bank = needed + small_blind * 2
                     print('Для Call необходимо {}'.format(needed))
                 else:
-                    print('От нас требуется ALL-INN. Наш текущий банк {}\n'
-                          'важное замечание: если необходимо собрать все цифры для корректного определения банка аи'
-                          'так как на данный момент банк определяется '.format(p_bank))
+                    print('От нас требуется ALL-INN. Наш текущий банк {}\n'.format(p_bank))
                     needed = p_bank
 
                 if there_is_max_button:
@@ -858,10 +802,10 @@ def interface(game, participants, basic, small_blind, limit):
                 abs_banks[0] = p_bank
 
                 if p_bank < limit * 0.50 and iters == 0:
-                    print('Покидаем это недоразумение, наш банк {}...'.format(participants[0].bank))
+                    print('Плохая игра, наш банк {}...'.format(participants[0].bank))
                     exit()
                 elif participants[0].bank > limit * 2 and iters == 0:
-                    print('Отбили вложения, прерываем игру...')
+                    print('Фиксируем прибыль, прерываем игру...')
                     exit()
 
                 print('Уточненные банки игроков {}'.format(abs_banks))
@@ -897,7 +841,7 @@ def interface(game, participants, basic, small_blind, limit):
 
                     time.sleep(0.2)
                     pass
-                    # break (надо прописать пропуск цикла до изменения положения чипа дилера)
+
                 else:
 
                     p_bank -= p_rise

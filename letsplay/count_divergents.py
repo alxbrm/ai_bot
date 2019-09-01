@@ -13,26 +13,26 @@ def execute():
 
     participants = [ai, op]
 
-    kol = Game()
+    game = Game()
 
-    kol.handout(1)
+    game.handout(1)
 
-    pre_chance, _ = kol.make_round(participants)
+    pre_chance, _ = game.make_round(participants)
 
-    floop_chance, _ = kol.make_round(participants)
+    floop_chance, _ = game.make_round(participants)
 
-    turn_chance, _ = kol.make_round(participants)
+    turn_chance, _ = game.make_round(participants)
 
-    kol.make_round(participants)
+    game.make_round(participants)
 
-    river_chance, gess = kol.make_round(participants)
+    river_chance, gess = game.make_round(participants)
 
     return gess, river_chance, turn_chance, floop_chance, pre_chance
 
 
-# list_of_percents = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+list_of_percents = [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
 
-list_of_percents = [0.5, 0.55, 0.85, 0.9]
+# list_of_percents = [0.5, 0.55, 0.85, 0.9]
 
 
 def divergents_pre_count(list):
@@ -55,7 +55,10 @@ def divergents_pre_count(list):
                 tests += 1
 
         with open('divergent-pre.txt', 'a', encoding='utf-8') as f:
-            print('{}-{}-{}||||всего циклов - {}, случаи выпадения вероятности - {}, river_successes - {}'.format(z, z + 0.05, pre_successes/tests, tries, tests, river_successes), file=f)
+            print('{}-{}-{}||||всего циклов - {}, '
+                  'случаи выпадения вероятности - {}, '
+                  'river_successes - {}'.format(z, z + 0.05, pre_successes/tests, tries, tests, river_successes),
+                  file=f)
 
     with open('divergent-pre.txt', 'a', encoding='utf-8') as f:
         print('---------------------------------------------------\n'
@@ -82,14 +85,17 @@ def divergents_floop_count(list):
                 tests += 1
 
         with open('divergent-floop.txt', 'a', encoding='utf-8') as f:
-            print('{}-{}-{}||||всего циклов - {}, случаи выпадения вероятности - {}, river_successes - {}'.format(z, z + 0.05, floop_successes/tests, tries, tests, river_successes), file=f)
+            print('{}-{}-{}||||всего циклов - {}, '
+                  'случаи выпадения вероятности - {}, '
+                  'river_successes - {}'.format(z, z + 0.05, floop_successes/tests, tries, tests, river_successes),
+                  file=f)
 
     with open('divergent-floop.txt', 'a', encoding='utf-8') as f:
         print('---------------------------------------------------\n'
               '---------------------------------------------------', file=f)
 
 
-def divergents_turn_count(list, tests=0, turn_successes=0, river_successes=0):
+def divergents_turn_count(list):
     for z in list:
         tests = 0
         tries = 0
@@ -111,7 +117,10 @@ def divergents_turn_count(list, tests=0, turn_successes=0, river_successes=0):
                 tests += 1
 
         with open('divergent-turn.txt', 'a', encoding='utf-8') as f:
-            print('{}-{}-{}||||всего циклов - {}, случаи выпадения вероятности - {}, river_successes - {} '.format(z, z + 0.05, turn_successes/tests, tries, tests, river_successes), file=f)
+            print('{}-{}-{}||||всего циклов - {}, '
+                  'случаи выпадения вероятности - {}, '
+                  'river_successes - {} '.format(z, z + 0.05, turn_successes/tests, tries, tests, river_successes),
+                  file=f)
 
     with open('divergent-turn.txt', 'a', encoding='utf-8') as f:
         print('---------------------------------------------------\n'
@@ -136,7 +145,10 @@ def divergents_river_count(list, tests=0, river_successes=0):
                 tests += 1
 
         with open('divergent-river.txt', 'a', encoding='utf-8') as f:
-            print('{}-{}-{}||||всего циклов - {}, случаи выпадения вероятности - {}, river_successes - {}'.format(z, z + 0.05, river_successes/tests, tries, tests, river_successes), file=f)
+            print('{}-{}-{}||||всего циклов - {}, '
+                  'случаи выпадения вероятности - {}, '
+                  'river_successes - {}'.format(z, z + 0.05, river_successes/tests, tries, tests, river_successes),
+                  file=f)
 
     with open('divergent-river.txt', 'a', encoding='utf-8') as f:
         print('---------------------------------------------------\n'

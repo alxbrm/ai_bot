@@ -1,7 +1,6 @@
 from get_cards import Player, Game, Opponent
 from functions import adjust_basic_params, interface, capture_participants_nicks
 from pyautogui import screenshot, locateOnScreen
-import copy, time
 
 
 def catch_handout():

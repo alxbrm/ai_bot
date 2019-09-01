@@ -2,18 +2,17 @@ from engine import Player, Game, Opponent
 import copy
 
 
-def add_money(player, limit, cash):
-    if 0 < player.bank / limit < 1:
-        if limit - player.bank < cash:
+def add_money(player, limit):
+    if 0 <= player.bank / limit < 1:
+        if limit - player.bank < player.available_cash:
             add = (limit - player.bank)
             player.bank += add
-            cash -= add
+            player.available_cash -= add
         else:
-            add = cash
+            add = player.available_cash
             player.bank += add
-            cash = 0
-        print('ВНЕСЛИ БАБЛИШКО ЗА ИГРОКА {}, остаток на счету {}'.format(add, cash))
-    return cash
+            player.available_cash = 0
+        print('{} внёс ${}, остаток на счету ${}'.format(player.nick, add, player.available_cash))
 
 
 def fill_banks_of_members(participants, num_of_members, bank=1000, coe_stack=1):
@@ -21,6 +20,7 @@ def fill_banks_of_members(participants, num_of_members, bank=1000, coe_stack=1):
     for i, amo in enumerate(participants):
         if i < num_of_members:
             amo.bank = int(bank)
+            amo.available_cash = bank * 3
             if i == 0:
                 amo.limit = int(bank)
             # тестируем случай, когда банк P меньше банка О в 2 раза
@@ -35,18 +35,16 @@ def fill_banks_of_members(participants, num_of_members, bank=1000, coe_stack=1):
 
 
 def check_banks(participants):
-    dupl = copy.copy(participants)
-    for i, amo in enumerate(dupl):
+    for i, amo in enumerate(participants):
         if amo.bank == 0 and i != 0:
             print('Из игры удалён {}'.format(amo.nick))
 
-            # participants.remove(amo)
-
             setattr(amo, 'nick', amo.nick + str(1))
 
-            amo.bank = player_bank
+            amo.bank = limit
+            amo.available_cash = limit * 3
 
-            print('\nВ игру вступил {}, его банк {}\n'.format(amo.nick, amo.bank))
+            print('\nВ игру вступил {}, его банк {}, доступный кэш {}\n'.format(amo.nick, amo.bank, amo.available_cash))
 
 
 def execute(participants, game_num, small_blind, num_of_members, bank=1000, coe_stack=1):
@@ -56,24 +54,28 @@ def execute(participants, game_num, small_blind, num_of_members, bank=1000, coe_
     if game_num == 1:
         fill_banks_of_members(participants, num_of_members, bank, coe_stack=coe_stack)
 
-    kol = Game(game_num, small_blind)
+    participants[0].limit = participants[0].bank
+    participants[0].blef_rises = 0
+
+    for p in participants:
+        p.in_game = True
+
+    kol = Game(game_num, small_blind, test_mode=False)
 
     kol.handout(num_of_members-1)
-
+    kol.make_round(participants)
+    kol.make_round(participants)
+    kol.make_round(participants)
+    kol.make_round(participants)
     kol.make_round(participants)
 
-    kol.make_round(participants)
-
-    kol.make_round(participants)
-
-    kol.make_round(participants)
-
-    kol.make_round(participants)
+    for p in participants:
+        add_money(p, limit)
 
     check_banks(participants)
 
     if len(participants) == 1:
-        print('Игра окончена: победитель {}, выигрыш {}'.format(participants[0].nick, participants[0].bank))
+        print('Игра окончена: победитель {}, выигрыш ${}'.format(participants[0].nick, participants[0].bank))
 
     return kol.game_num
 
@@ -82,29 +84,12 @@ played_circles = 0
 ii_wins = 0
 
 small_blind = 1
-player_bank = small_blind * 2 * 50
-available_cash = player_bank
+limit = small_blind * 2 * 50
+available_cash = limit * 3
 
 coefficient_of_stack_with_op = 1
-quantity_of_m = 3
-max_circles = 1000
-
-
-# 2 игрока выигрыш с равными банкроллами P и O у P 74% all-in на префлопе
-# 2 игрока выигрыш с банкроллами P < O в 2 раза у P 53% all-in на префлопе
-# 2 игрока выигрыш с банкроллами P < O в 3 раза у P 39% all-in на префлопе
-
-# 2 игрока выигрыш с равными банкроллами P и O у P 82% all-in на флопе
-# 2 игрока выигрыш с банкроллами P < O в 2 раза у P 67% all-in на флопе
-# 2 игрока выигрыш с банкроллами P < O в 3 раза у P 53% all-in на флопе
-
-# 2 игрока выигрыш с равными банкроллами P и O у P 86% all-in на терне
-# 2 игрока выигрыш с банкроллами P < O в 2 раза у P 69% all-in на терне
-# 2 игрока выигрыш с банкроллами P < O в 3 раза у P 53% all-in на терне
-
-# 2 игрока выигрыш с равными банкроллами P и O у P 75 % all-in на ривере
-# 2 игрока выигрыш с банкроллами P < O в 2 раза у P 52% all-in на ривере
-# 2 игрока выигрыш с банкроллами P < O в 3 раза у P 34% all-in на ривере
+quantity_of_m = 2
+max_circles = 100
 
 while played_circles < max_circles:
 
@@ -123,33 +108,21 @@ while played_circles < max_circles:
     participants = [ai, opponent_1, opponent_2, opponent_3, opponent_4, opponent_5, opponent_6, opponent_7]
 
     execute(participants, game_num=1, small_blind=small_blind, num_of_members=quantity_of_members,
-            bank=player_bank, coe_stack=coefficient_of_stack_with_op)
-
-    player_cash_in_game = add_money(ai, player_bank, available_cash)
+            bank=limit, coe_stack=coefficient_of_stack_with_op)
 
     game_num = 2
 
     quantity_of_remain_members = len(participants)
 
-    while ai.bank > 0:
+    while (ai.bank + ai.available_cash) > limit / 3:
 
-        # if len(participants) == 1:
-        #     break
-
-        if ai.bank > (player_bank + available_cash) * 2:
+        if (ai.bank + ai.available_cash) > (limit + available_cash) * 2:
+            ii_wins += 1
             break
 
         execute(participants, game_num, small_blind=small_blind, num_of_members=quantity_of_members)
 
-        player_cash_in_game = add_money(ai, player_bank, player_cash_in_game)
-
         game_num += 1
-
-    # if ai.bank > 0:
-    #     ii_wins += 1
-
-    if ai.bank > (player_bank + available_cash) * 2:
-        ii_wins += 1
 
     played_circles += 1
 

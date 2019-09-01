@@ -9,7 +9,7 @@ rang_points = [147, 1200/(1/1.28), 1200/(1/3.26), 1200/(1/19.7), 1200/(1/20.6), 
      1200/(1/594), 1200/(1/3589.6)]
 
 
-class Player():
+class Player:
     def __init__(self, bank=0):
         self.bank = bank
         self.suit_maps, self.map_of_cards, self.map_of_values = [], [], []
@@ -160,17 +160,10 @@ class Player():
                                              op_max_points, self.i_have_pair_on_prefloop, self.op_count)
 
             maxis = find_out_the_strongest_possibilities(self.op_map_of_values)
-            # print(maxis)
 
             self.win_chance, self.local_win_chance = basic_decision(op_virt_points, my_virt_points, op_points, my_points, maxis, values)
 
-            # print('\n{} - виртуальные очки оппонента\n{} - виртуальные очки игрока\n {} - очки оппонента\n {} - очки игрока'.format(op_virt_points, my_virt_points, op_points, my_points))
-
-            # print('Шанс выигрыша ИИ {} %'.format(self.win_chance * 100))
-
             self.win_chance = correct_win_chance(self.win_chance, self.round, self.op_count)
-
-            # print('Скорректированный Шанс выигрыша ИИ {} %'.format(self.win_chance * 100))
 
             if self.win_chance < 0:
                 self.win_chance = 0
@@ -181,7 +174,7 @@ class Player():
         return self.win_chance, max(my_virt_points)
 
 
-class Opponent():
+class Opponent:
     def __init__(self, nick='Оппонент', bank=0):
         self.bank = bank
         self.suit_maps, self.map_of_cards, self.map_of_values = [], [], []
@@ -192,7 +185,7 @@ class Opponent():
         self.blef_rank = 0
 
 
-class Game():
+class Game:
     def __init__(self, game_num=1, small_blind=10):
         self.ch = list((suits[0]+i for i in row))
         self.tr = list((suits[1]+i for i in row))
